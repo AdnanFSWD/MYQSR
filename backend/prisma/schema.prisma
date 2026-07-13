@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User roles in the QSR System
+enum UserRole  {
+  ADMIN
+  CASHIER
+  KITCHEN
+}
+
+// Bill payment modes
+enum PaymentMode {
+  CASH
+  UPI
+  CARD
+}
+
+// Order types
+enum OrderType {
+  DINE_IN
+  TAKE_AWAY
+}
+
+// Bill statuses
+enum BillStatus {
+  COMPLETED
+  CANCELLED
+}
+
+// 1. User Model
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(CASHIER)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+// 2. Category Model
+model Category {
+  id           Int        @id @default(autoincrement())
+  code         String     @unique
+  name         String     @unique
+  displayOrder Int        @default(0) @map("display_order")
+  isActive     Boolean    @default(true) @map("is_active")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  menuItems    MenuItem[]
+
+  @@map("categories")
+}
+
+// 3. MenuItem Model
+model MenuItem {
+  id           Int        @id @default(autoincrement())
+  code         String     @unique
+  categoryId   Int        @map("category_id")
+  category     Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  name         String
+  shortCode    String     @unique @map("short_code")
+  description  String?
+  price        Decimal    @db.Decimal(10, 2)
+  image        String?    // Stores only filename
+  isAvailable  Boolean    @default(true) @map("is_available")
+  displayOrder Int        @default(0) @map("display_order")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  billItems    BillItem[]
+
+  @@unique([categoryId, name])
+  @@map("menu_items")
+}
+
+// 4. Bill Model
+model Bill {
+  id          Int         @id @default(autoincrement())
+  billNumber  String      @unique @map("bill_number")
+  orderType   OrderType   @map("order_type")
+  subtotal    Decimal     @map("subtotal") @db.Decimal(10, 2)
+  discount    Decimal     @default(0.00) @map("discount") @db.Decimal(10, 2)
+  gstAmount   Decimal     @map("gst_amount") @db.Decimal(10, 2)
+  total       Decimal     @map("total") @db.Decimal(10, 2)
+  paymentMode PaymentMode @map("payment_mode")
+  status      BillStatus  @map("status")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  cancelledAt DateTime?   @map("cancelled_at")
+  cancelledBy Int?        @map("cancelled_by")
+  billItems   BillItem[]
+
+  @@map("bills")
+}
+
+// 5. BillItem Model
+model BillItem {
+  id         Int      @id @default(autoincrement())
+  billId     Int      @map("bill_id")
+  bill       Bill     @relation(fields: [billId], references: [id], onDelete: Cascade)
+  menuItemId Int      @map("menu_item_id")
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  quantity   Int
+  unitPrice  Decimal  @map("unit_price") @db.Decimal(10, 2)
+  total      Decimal  @map("total") @db.Decimal(10, 2)
+
+  @@map("bill_items")
+}
+
+// 6. Inventory Model
+model Inventory {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  unit            String
+  quantity        Float    @default(0.0)
+  minimumQuantity Float    @default(0.0) @map("minimum_quantity")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("inventory")
+}
+
+// 7. Setting Model
+model Setting {
+  id                 Int      @id @default(autoincrement())
+  // Restaurant Info
+  restaurantName     String   @map("restaurant_name")
+  phone              String
+  email              String
+  gstNumber          String   @map("gst_number")
+  fssaiNumber        String   @map("fssai_number")
+  address            String
+  city               String
+  state              String
+  pincode            String
+  // Billing Info
+  gstPercentage      Decimal  @map("gst_percentage") @db.Decimal(5, 2)
+  currency           String   @default("INR")
+  roundOffBills      Boolean  @default(true) @map("round_off_bills")
+  defaultPaymentMode String   @default("CASH") @map("default_payment_mode")
+  // Receipt Info
+  billPrefix         String   @default("QSR") @map("bill_prefix")
+  receiptHeader      String?  @map("receipt_header")
+  receiptFooter      String?  @map("receipt_footer")
+  footerMessage      String?  @map("footer_message")
+  printerWidth       Int      @default(80) @map("printer_width")
+  // Application Info
+  timezone           String   @default("Asia/Kolkata")
+  dateFormat         String   @default("DD-MM-YYYY") @map("date_format")
+  timeFormat         String   @default("12-hour") @map("time_format")
+
+  @@map("settings")
+}
