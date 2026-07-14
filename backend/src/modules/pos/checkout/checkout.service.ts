@@ -1,5 +1,5 @@
 import { prisma } from '../../../prisma/client';
-import { Bill, PaymentMode, OrderType } from '@prisma/client';
+import { PaymentMode, OrderType } from '@prisma/client';
 import { NotFoundError, BadRequestError } from '../../../shared/utils/errors';
 import { ReceiptBuilder } from '../receipt/receipt-builder.service';
 

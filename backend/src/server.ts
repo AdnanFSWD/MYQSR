@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`=============================================`);
   console.log(`  Server is running in ${process.env.NODE_ENV || 'development'} mode`);
-  console.log(`  Listening on http://localhost:${PORT}`);
+  console.log(`  Server started on port ${PORT}`);
   console.log(`  Health check: http://localhost:${PORT}/api/health`);
   console.log(`=============================================`);
 });
