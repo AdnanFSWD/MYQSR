@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { MenuCard } from './MenuCard';
 import type { MenuItem } from '../../../api/menuItemApi';
 

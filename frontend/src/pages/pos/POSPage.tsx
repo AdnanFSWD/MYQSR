@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Grid, Box, Paper, Button, Snackbar, Alert, Divider } from '@mui/material';
+import { Box, Paper, Button, Snackbar, Alert, Divider } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { categoryApi } from '../../api/categoryApi';

@@ -83,7 +83,7 @@ export const SettingsPage: React.FC = () => {
     },
   });
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (newValue: any) => {
     setActiveTab(newValue);
   };
 

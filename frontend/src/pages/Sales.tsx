@@ -24,7 +24,7 @@ import {
   Snackbar,
   Alert,
   IconButton,
-  Tooltip,
+  CircularProgress,
 } from '@mui/material';
 import {
   Visibility as ViewIcon,
@@ -36,7 +36,7 @@ import {
 import { AgGridReact } from 'ag-grid-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { salesApi } from '../api/salesApi';
-import type { BillSummary, BillDetails } from '../api/salesApi';
+import type { BillSummary } from '../api/salesApi';
 import { ReceiptPrinter } from '../modules/receipt/components/ReceiptPrinter';
 
 // Import AG Grid styles
@@ -78,7 +78,7 @@ export const Sales: React.FC = () => {
   };
 
   // Queries
-  const { data: salesData, isLoading, isError, refetch } = useQuery({
+  const { data: salesData, refetch } = useQuery({
     queryKey: ['sales-bills', { page, limit, date, billNumber, paymentMode, orderType, status }],
     queryFn: () => salesApi.getBills({ page, limit, date, billNumber, paymentMode, orderType, status }),
   });
@@ -137,7 +137,7 @@ export const Sales: React.FC = () => {
   };
 
   // AG Grid Columns Configuration
-  const columnDefs = useMemo(() => [
+  const columnDefs: any = useMemo(() => [
     {
       field: 'billNumber',
       headerName: 'Bill Number',

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Grid, Card, CardContent, Button, Divider } from '@mui/material';
+import { Box, Typography, Card, CardContent, Button, Divider } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import {
   Assessment as AssessmentIcon,
   Timeline as TimelineIcon,

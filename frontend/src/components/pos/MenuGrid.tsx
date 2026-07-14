@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, Card, CardContent, CardActionArea, Box, Typography, CircularProgress } from '@mui/material';
+import { Card, CardContent, CardActionArea, Box, Typography, CircularProgress } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import type { MenuItem } from '../../api/menuItemApi';
 
 interface MenuGridProps {
